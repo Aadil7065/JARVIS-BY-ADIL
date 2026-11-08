@@ -53,10 +53,6 @@ termux-setup-storage
 ```
 
 ```bash
-python -c 'import requests, PIL, pytesseract; print("All OK")'
-```
-
-```bash
 python jarvis.py
 ```
 
