@@ -3,7 +3,7 @@
 #   JARVIS BY X
 #   Advanced AI Assistant for Termux (Android)
 #   Created by ADIl
-#   Powered by DeepSeek
+#   Powered by Multi-Free-AI Providers (Auto-Failover)
 # =============================================================
 
 import os
@@ -47,6 +47,17 @@ BANNER = f"""{R}{BOLD}
 {G}{DIM}        Advanced AI Assistant for Termux{RST}
 {P}{DIM}  ══════════════════════════════════════════════{RST}
 """
+
+# ---------- FREE AI PROVIDERS (Auto-Switch) ----------
+FREE_PROVIDERS = [
+    {"name": "Groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama-3.3-70b-versatile", "key_env": "GROQ_API_KEY", "cfg_name": "groq_key"},
+    {"name": "OpenRouter", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "meta-llama/llama-3.3-70b-instruct:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
+    {"name": "Google Gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash", "key_env": "GEMINI_API_KEY", "cfg_name": "gemini_key"},
+    {"name": "Mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "key_env": "MISTRAL_API_KEY", "cfg_name": "mistral_key"},
+    {"name": "Cerebras", "url": "https://api.cerebras.ai/v1/chat/completions", "model": "llama3.1-8b", "key_env": "CEREBRAS_API_KEY", "cfg_name": "cerebras_key"},
+    {"name": "SambaNova", "url": "https://api.sambanova.ai/v1/chat/completions", "model": "Meta-Llama-3.3-70B-Instruct", "key_env": "SAMBANOVA_API_KEY", "cfg_name": "sambanova_key"},
+    {"name": "Pollinations (No Key)", "url": "https://text.pollinations.ai/openai", "model": "openai", "key_env": "", "cfg_name": "none"}
+]
 
 # ---------- UTILS ----------
 def run(cmd, timeout=45):
@@ -148,45 +159,41 @@ def setup():
     say("  ────────────────────────────────────────", DIM)
     print()
 
-    if not cfg.get("api_key"):
-        say("  DeepSeek API key is required.", Y)
+    if not cfg.get("setup_done"):
+        say("  Free AI API Setup (Kisi ek ki bhi key daal sakte hain)", Y + BOLD)
         print()
-        say("  How to get your key:", C + BOLD)
-        say("    1. Visit:  https://platform.deepseek.com", W)
-        say("    2. Sign up or log in", W)
-        say("    3. Go to 'API Keys' section (left sidebar)", W)
-        say("    4. Click 'Create new API key'", W)
-        say("    5. Name it 'jarvis' and copy the key", W)
-        say("    6. Key format: sk-xxxxxxxxxxxxxxxx", W)
+        say("  Links to get Free Keys:", C)
+        say("    Groq:       https://console.groq.com/keys", W)
+        say("    OpenRouter: https://openrouter.ai/keys", W)
+        say("    Gemini:     https://aistudio.google.com/apikey", W)
         print()
-        while True:
-            k = ask("  Paste your API key: ")
-            if k.lower() in ("exit", "quit"):
-                say("  Goodbye.", R)
-                sys.exit(0)
-            if k.startswith("sk-") and len(k) > 15:
-                cfg["api_key"] = k
-                save_cfg(cfg)
-                say("  API key saved at ~/.jarvis/config.json", G)
-                time.sleep(1)
-                break
-            say("  Invalid format. Key must start with 'sk-'.", R)
+        
+        for p in FREE_PROVIDERS:
+            if p["cfg_name"] == "none": continue
+            
+            # Check env variable first
+            env_key = os.getenv(p["key_env"], "")
+            if env_key:
+                cfg[p["cfg_name"]] = env_key
+                continue
+                
+            k = ask(f"  {p['name']} API Key (Enter to skip): ", P)
+            if k and k.lower() not in ("skip", "exit", "quit"):
+                cfg[p["cfg_name"]] = k
+        
+        cfg["setup_done"] = True
+        save_cfg(cfg)
+        say("\n  Setup complete. Agar koi key nahi daali, toh default free AI use hoga.", G)
+        time.sleep(1.5)
     else:
-        say("  API key already configured.", G)
-        ch = ask("  Reconfigure API key? [y/N]: ", Y)
-        if ch.lower() == "y":
-            k = ask("  New API key: ")
-            if k.startswith("sk-"):
-                cfg["api_key"] = k
-                save_cfg(cfg)
-                say("  Updated.", G)
+        say("  API settings loaded from ~/.jarvis/config.json", G)
 
     print()
     permissions_wizard()
     time.sleep(1)
     return cfg
 
-# ---------- AI BRAIN ----------
+# ---------- AI BRAIN (Multi-Provider Fallback) ----------
 SYSTEM_PROMPT = """You are JARVIS BY X, an advanced AI mobile assistant created by ADIl, running on Android via Termux.
 
 Understand and reply in the user's language (Hindi, English, Tamil, Bengali, or any).
@@ -223,21 +230,50 @@ Available actions and parameters:
 
 Keep responses short and friendly. Reply in the user's language."""
 
-def call_ai(messages, model="deepseek-chat", timeout=60):
+def call_ai(messages, model="auto", timeout=60):
     cfg = load_cfg()
-    key = cfg.get("api_key", "")
-    if not key:
-        return "__ERROR__ API key missing. Restart tool."
-    headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
-    body = {"model": model, "messages": messages, "temperature": 0.3}
-    try:
-        r = requests.post("https://api.deepseek.com/chat/completions",
-                          headers=headers, json=body, timeout=timeout)
-        if r.status_code != 200:
-            return f"__ERROR__ HTTP {r.status_code}: {r.text[:120]}"
-        return r.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        return f"__ERROR__ {e}"
+    last_err = "Koi valid API key nahi mili."
+    
+    for p in FREE_PROVIDERS:
+        # Check if we have a key for this provider
+        key = cfg.get(p["cfg_name"], "")
+        if not key and p["cfg_name"] != "none":
+            continue # Skip if no key and it's not the no-key provider
+            
+        headers = {"Content-Type": "application/json"}
+        if key and key != "none":
+            headers["Authorization"] = f"Bearer {key}"
+            
+        # Use provider's default model
+        req_model = p["model"]
+        body = {"model": req_model, "messages": messages, "temperature": 0.3}
+        
+        # Special case for Pollinations
+        if p["name"].startswith("Pollinations"):
+            body["model"] = "openai"
+            
+        try:
+            say(f"  [Connecting to {p['name']}...]", DIM)
+            r = requests.post(p["url"], headers=headers, json=body, timeout=timeout)
+            
+            if r.status_code == 200:
+                data = r.json()
+                if "choices" in data and len(data["choices"]) > 0:
+                    say(f"  [Connected via {p['name']}]", G)
+                    return data["choices"][0]["message"]["content"]
+                elif "content" in data:
+                    say(f"  [Connected via {p['name']}]", G)
+                    return data["content"]
+            else:
+                err_msg = r.json().get("error", {}).get("message", f"HTTP {r.status_code}")
+                last_err = f"{p['name']} error: {err_msg}"
+                continue # Move to next provider
+                
+        except Exception as e:
+            last_err = f"{p['name']} connection failed: {str(e)[:50]}"
+            continue # Move to next provider
+            
+    return f"__ERROR__ Saare API fail ho gaye. Last error: {last_err}"
 
 def decide(user_input):
     content = call_ai([
@@ -357,7 +393,7 @@ def cm_write(prompt, filename):
         return "No prompt given"
     code = call_ai(
         [{"role": "user", "content": f"Write Python code for: {prompt}. Return ONLY code, no markdown, no explanations."}],
-        model="deepseek-coder"
+        model="auto"
     )
     if code.startswith("__ERROR__"):
         return code
@@ -388,7 +424,7 @@ def cm_edit(filename, instruction):
         return f"Read error: {e}"
     new = call_ai(
         [{"role": "user", "content": f"Edit this code:\n{old}\n\nInstruction: {instruction}\n\nReturn ONLY the edited code."}],
-        model="deepseek-coder"
+        model="auto"
     )
     if new.startswith("__ERROR__"):
         return new
