@@ -38,7 +38,7 @@ pkg install git python python-pip tesseract tesseract-data-eng tesseract-data-hi
 
 ```bash
 cd ~
-git clone https://github.com/YOUR_USERNAME/jarvis-by-x.git
+git clone https://github.com/Aadil7065/JARVIS-BY-ADIL.git
 cd jarvis-by-x
 ```
 
@@ -158,7 +158,7 @@ pip install -r requirements.txt --upgrade
 ```bash
 cd ~
 rm -rf jarvis-by-x
-git clone https://github.com/YOUR_USERNAME/jarvis-by-x.git
+git clone https://github.com/Aadil7065/JARVIS-BY-ADIL.git
 cd jarvis-by-x
 pip install -r requirements.txt
 pip install pytesseract --no-deps
