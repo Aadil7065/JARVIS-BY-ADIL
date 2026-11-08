@@ -3,7 +3,7 @@
 #   JARVIS BY X
 #   Advanced AI Assistant for Termux (Android)
 #   Created by ADIl
-#   Powered by Multi-Free-AI Providers (Auto-Failover)
+#   Powered by 20+ Free AI Models (Auto-Failover)
 # =============================================================
 
 import os
@@ -48,15 +48,47 @@ BANNER = f"""{R}{BOLD}
 {P}{DIM}  ══════════════════════════════════════════════{RST}
 """
 
-# ---------- FREE AI PROVIDERS (Auto-Switch) ----------
+# ---------- 20+ AI PROVIDERS & MODELS (Auto-Switch) ----------
+# Yeh saari free APIs hain. Agar ek fail hogi, toh tool agle par chala jayega.
 FREE_PROVIDERS = [
-    {"name": "Groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama-3.3-70b-versatile", "key_env": "GROQ_API_KEY", "cfg_name": "groq_key"},
-    {"name": "OpenRouter", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "meta-llama/llama-3.3-70b-instruct:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
-    {"name": "Google Gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-1.5-flash", "key_env": "GEMINI_API_KEY", "cfg_name": "gemini_key"},
-    {"name": "Mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "key_env": "MISTRAL_API_KEY", "cfg_name": "mistral_key"},
-    {"name": "Cerebras", "url": "https://api.cerebras.ai/v1/chat/completions", "model": "llama3.1-8b", "key_env": "CEREBRAS_API_KEY", "cfg_name": "cerebras_key"},
-    {"name": "SambaNova", "url": "https://api.sambanova.ai/v1/chat/completions", "model": "Meta-Llama-3.3-70B-Instruct", "key_env": "SAMBANOVA_API_KEY", "cfg_name": "sambanova_key"},
-    {"name": "Pollinations (No Key)", "url": "https://text.pollinations.ai/openai", "model": "openai", "key_env": "", "cfg_name": "none"}
+    # 1. Groq (Fastest & Highly Recommended)
+    {"name": "Groq (Llama 3.3)", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama-3.3-70b-versatile", "key_env": "GROQ_API_KEY", "cfg_name": "groq_key"},
+    {"name": "Groq (Llama 3)", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama3-8b-8192", "key_env": "GROQ_API_KEY", "cfg_name": "groq_key"},
+    {"name": "Groq (Mixtral)", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "mixtral-8x7b-32768", "key_env": "GROQ_API_KEY", "cfg_name": "groq_key"},
+    
+    # 2. Google Gemini
+    {"name": "Google Gemini 1.5", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-1.5-flash", "key_env": "GEMINI_API_KEY", "cfg_name": "gemini_key"},
+    {"name": "Google Gemini 1.5-8B", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-1.5-flash-8b", "key_env": "GEMINI_API_KEY", "cfg_name": "gemini_key"},
+    
+    # 3. OpenRouter (Many Free Models)
+    {"name": "OpenRouter (Llama 3.3)", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "meta-llama/llama-3.3-70b-instruct:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
+    {"name": "OpenRouter (Llama 3.1)", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "meta-llama/llama-3.1-8b-instruct:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
+    {"name": "OpenRouter (Phi-3)", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "microsoft/phi-3-mini-128k-instruct:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
+    {"name": "OpenRouter (Gemma 2)", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "google/gemma-2-9b-it:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
+    
+    # 4. Mistral AI
+    {"name": "Mistral Small", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "key_env": "MISTRAL_API_KEY", "cfg_name": "mistral_key"},
+    {"name": "Mistral Mixtral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "open-mixtral-8x7b", "key_env": "MISTRAL_API_KEY", "cfg_name": "mistral_key"},
+    
+    # 5. Cerebras
+    {"name": "Cerebras (Llama 3.1 8B)", "url": "https://api.cerebras.ai/v1/chat/completions", "model": "llama3.1-8b", "key_env": "CEREBRAS_API_KEY", "cfg_name": "cerebras_key"},
+    
+    # 6. SambaNova
+    {"name": "SambaNova (Llama 3.3)", "url": "https://api.sambanova.ai/v1/chat/completions", "model": "Meta-Llama-3.3-70B-Instruct", "key_env": "SAMBANOVA_API_KEY", "cfg_name": "sambanova_key"},
+    
+    # 7. Hugging Face
+    {"name": "HuggingFace (Llama 3)", "url": "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions", "model": "meta-llama/Meta-Llama-3-8B-Instruct", "key_env": "HF_TOKEN", "cfg_name": "huggingface_key"},
+    
+    # 8. NVIDIA NIM
+    {"name": "NVIDIA NIM (Llama 3.1)", "url": "https://integrate.api.nvidia.com/v1/chat/completions", "model": "meta/llama-3.1-8b-instruct", "key_env": "NVIDIA_API_KEY", "cfg_name": "nvidia_key"},
+    
+    # 9. Zhipu AI (Free tier)
+    {"name": "Zhipu (GLM-4-Flash)", "url": "https://open.bigmodel.cn/api/paas/v4/chat/completions", "model": "glm-4-flash", "key_env": "ZHIPU_API_KEY", "cfg_name": "zhipu_key"},
+    
+    # 10. Pollinations (No Key Required - 100% Guaranteed Fallback)
+    {"name": "Pollinations (OpenAI)", "url": "https://text.pollinations.ai/openai", "model": "openai", "key_env": "", "cfg_name": "none"},
+    {"name": "Pollinations (Mistral)", "url": "https://text.pollinations.ai/openai", "model": "mistral", "key_env": "", "cfg_name": "none"},
+    {"name": "Pollinations (Llama)", "url": "https://text.pollinations.ai/openai", "model": "llama", "key_env": "", "cfg_name": "none"}
 ]
 
 # ---------- UTILS ----------
@@ -163,9 +195,10 @@ def setup():
         say("  Free AI API Setup (Kisi ek ki bhi key daal sakte hain)", Y + BOLD)
         print()
         say("  Links to get Free Keys:", C)
-        say("    Groq:       https://console.groq.com/keys", W)
-        say("    OpenRouter: https://openrouter.ai/keys", W)
-        say("    Gemini:     https://aistudio.google.com/apikey", W)
+        say("    Groq (Best):    https://console.groq.com/keys", W)
+        say("    Gemini:         https://aistudio.google.com/apikey", W)
+        say("    OpenRouter:     https://openrouter.ai/keys", W)
+        say("    HuggingFace:    https://huggingface.co/settings/tokens", W)
         print()
         
         for p in FREE_PROVIDERS:
@@ -183,7 +216,7 @@ def setup():
         
         cfg["setup_done"] = True
         save_cfg(cfg)
-        say("\n  Setup complete. Agar koi key nahi daali, toh default free AI use hoga.", G)
+        say("\n  Setup complete. Missing keys will fallback to no-key APIs.", G)
         time.sleep(1.5)
     else:
         say("  API settings loaded from ~/.jarvis/config.json", G)
@@ -230,7 +263,7 @@ Available actions and parameters:
 
 Keep responses short and friendly. Reply in the user's language."""
 
-def call_ai(messages, model="auto", timeout=60):
+def call_ai(messages, model="auto", timeout=20):
     cfg = load_cfg()
     last_err = "Koi valid API key nahi mili."
     
@@ -250,10 +283,11 @@ def call_ai(messages, model="auto", timeout=60):
         
         # Special case for Pollinations
         if p["name"].startswith("Pollinations"):
-            body["model"] = "openai"
+            body["model"] = p["model"]
             
         try:
-            say(f"  [Connecting to {p['name']}...]", DIM)
+            # Ek choti si delay taaki network block na kare
+            time.sleep(0.1)
             r = requests.post(p["url"], headers=headers, json=body, timeout=timeout)
             
             if r.status_code == 200:
@@ -267,10 +301,12 @@ def call_ai(messages, model="auto", timeout=60):
             else:
                 err_msg = r.json().get("error", {}).get("message", f"HTTP {r.status_code}")
                 last_err = f"{p['name']} error: {err_msg}"
+                say(f"  [{p['name']} failed, switching...]", DIM)
                 continue # Move to next provider
                 
         except Exception as e:
             last_err = f"{p['name']} connection failed: {str(e)[:50]}"
+            say(f"  [{p['name']} timeout, switching...]", DIM)
             continue # Move to next provider
             
     return f"__ERROR__ Saare API fail ho gaye. Last error: {last_err}"
@@ -290,28 +326,22 @@ def decide(user_input):
         return {"action": "chat", "parameters": {}, "response": content}
 
 # ---------- ACTIONS ----------
-def act_battery():
-    return run("termux-battery-status")
-
+def act_battery(): return run("termux-battery-status")
 def act_vibrate(ms=500):
     run(f"termux-vibrate -d {int(ms)}")
     return f"Vibrated {ms}ms"
-
 def act_notify(title, content):
     t = title.replace('"', "'")
     c = content.replace('"', "'")
     run(f'termux-notification --title "{t}" --content "{c}"')
     return "Notification sent"
-
 def act_tts(text):
     safe = text.replace('"', "'")
     run(f'termux-tts-speak "{safe}"')
     return "Speaking..."
-
 def act_screenshot():
     run(f"screencap -p {SHOT}")
     return f"Screenshot: {SHOT}"
-
 def act_read_screen():
     try:
         import pytesseract
@@ -324,54 +354,37 @@ def act_read_screen():
         return txt or "(no text detected)"
     except Exception as e:
         return f"OCR error: {e}"
-
 def act_read_screen_ui():
     run("uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1")
     out = run("cat /data/local/tmp/ui.xml 2>/dev/null")
-    if not out:
-        return "(UI dump unavailable)"
+    if not out: return "(UI dump unavailable)"
     try:
         texts = re.findall(r'text="([^"]+)"', out)
         return " | ".join(t for t in texts if t.strip()) or "(empty)"
-    except Exception:
-        return "(parse error)"
-
+    except Exception: return "(parse error)"
 def act_open_app(pkg):
-    if not pkg:
-        return "No package given"
+    if not pkg: return "No package given"
     return run(f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
-
-def act_clipboard_get():
-    return run("termux-clipboard-get") or "(empty)"
-
+def act_clipboard_get(): return run("termux-clipboard-get") or "(empty)"
 def act_clipboard_set(text):
     safe = text.replace('"', "'")
     run(f'termux-clipboard-set "{safe}"')
     return "Clipboard set"
-
 def act_sms(number, message):
-    if not number:
-        return "No number given"
+    if not number: return "No number given"
     safe = message.replace('"', "'")
     return run(f'termux-sms-send -n {number} "{safe}"')
-
 def act_call(number):
-    if not number:
-        return "No number given"
+    if not number: return "No number given"
     return run(f"termux-telephony-call {number}")
-
 def act_volume(direction):
     key = "24" if direction == "up" else "25"
     run(f"input keyevent {key}")
     return f"Volume {direction}"
-
 def act_flashlight(on):
     run(f"termux-torch {'on' if on else 'off'}")
     return f"Flashlight {'ON' if on else 'OFF'}"
-
-def act_location():
-    return run("termux-location")
-
+def act_location(): return run("termux-location")
 def act_device_info():
     info = {
         "model": run("getprop ro.product.model"),
@@ -380,79 +393,49 @@ def act_device_info():
         "battery": run("termux-battery-status"),
     }
     return json.dumps(info, indent=2)
-
-def act_list_files(d):
-    return run(f"ls -la {d}")
-
-def act_shell(cmd):
-    return run(cmd)
+def act_list_files(d): return run(f"ls -la {d}")
+def act_shell(cmd): return run(cmd)
 
 # ---------- CODE MANAGER ----------
 def cm_write(prompt, filename):
-    if not prompt:
-        return "No prompt given"
-    code = call_ai(
-        [{"role": "user", "content": f"Write Python code for: {prompt}. Return ONLY code, no markdown, no explanations."}],
-        model="auto"
-    )
-    if code.startswith("__ERROR__"):
-        return code
+    if not prompt: return "No prompt given"
+    code = call_ai([{"role": "user", "content": f"Write Python code for: {prompt}. Return ONLY code, no markdown, no explanations."}])
+    if code.startswith("__ERROR__"): return code
     path = os.path.join(CODE_DIR, filename)
     try:
-        with open(path, "w") as f:
-            f.write(code)
+        with open(path, "w") as f: f.write(code)
         return f"Saved: {path}"
-    except Exception as e:
-        return f"Save error: {e}"
-
+    except Exception as e: return f"Save error: {e}"
 def cm_read(filename):
     path = os.path.join(CODE_DIR, filename)
-    if not os.path.exists(path):
-        return f"Not found: {path}"
-    try:
-        return open(path).read()
-    except Exception as e:
-        return f"Read error: {e}"
-
+    if not os.path.exists(path): return f"Not found: {path}"
+    try: return open(path).read()
+    except Exception as e: return f"Read error: {e}"
 def cm_edit(filename, instruction):
     path = os.path.join(CODE_DIR, filename)
-    if not os.path.exists(path):
-        return f"Not found: {path}"
+    if not os.path.exists(path): return f"Not found: {path}"
+    try: old = open(path).read()
+    except Exception as e: return f"Read error: {e}"
+    new = call_ai([{"role": "user", "content": f"Edit this code:\n{old}\n\nInstruction: {instruction}\n\nReturn ONLY the edited code."}])
+    if new.startswith("__ERROR__"): return new
     try:
-        old = open(path).read()
-    except Exception as e:
-        return f"Read error: {e}"
-    new = call_ai(
-        [{"role": "user", "content": f"Edit this code:\n{old}\n\nInstruction: {instruction}\n\nReturn ONLY the edited code."}],
-        model="auto"
-    )
-    if new.startswith("__ERROR__"):
-        return new
-    try:
-        with open(path, "w") as f:
-            f.write(new)
+        with open(path, "w") as f: f.write(new)
         return f"Edited: {path}"
-    except Exception as e:
-        return f"Write error: {e}"
-
+    except Exception as e: return f"Write error: {e}"
 def cm_run(filename):
     path = os.path.join(CODE_DIR, filename)
-    if not os.path.exists(path):
-        return f"Not found: {path}"
+    if not os.path.exists(path): return f"Not found: {path}"
     ext = os.path.splitext(filename)[1]
     interp = {".py": "python", ".sh": "bash", ".js": "node"}.get(ext)
-    if not interp:
-        return f"Unknown extension: {ext}"
+    if not interp: return f"Unknown extension: {ext}"
     return run(f"{interp} {path}", timeout=90) or "(no output)"
-
 def cm_delete(filename):
     path = os.path.join(CODE_DIR, filename)
     if os.path.exists(path):
         try:
             os.remove(path)
             return f"Deleted: {filename}"
-        except Exception as e:
-            return f"Delete error: {e}"
+        except Exception as e: return f"Delete error: {e}"
     return "File not found"
 
 # ---------- DISPATCHER ----------
