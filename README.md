@@ -39,7 +39,7 @@ pkg install git python python-pip tesseract tesseract-data-eng tesseract-data-hi
 ```bash
 cd ~
 git clone https://github.com/Aadil7065/JARVIS-BY-ADIL.git
-cd jarvis-by-x
+cd JARVIS-BY-ADI
 ```
 
 ```bash
