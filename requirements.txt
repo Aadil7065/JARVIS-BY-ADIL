@@ -1,0 +1,8 @@
+# Pure-Python HTTP client used for AI requests
+requests
+
+# Python wrapper for OCR engine
+pytesseract
+
+# NOTE: Pillow is NOT listed here because it fails to compile via pip on Termux.
+# Install it separately with:  pkg install python-pillow -y
