@@ -52,7 +52,7 @@ BANNER = f"""{R}{BOLD}
 FREE_PROVIDERS = [
     {"name": "Groq", "url": "https://api.groq.com/openai/v1/chat/completions", "model": "llama-3.3-70b-versatile", "key_env": "GROQ_API_KEY", "cfg_name": "groq_key"},
     {"name": "OpenRouter", "url": "https://openrouter.ai/api/v1/chat/completions", "model": "meta-llama/llama-3.3-70b-instruct:free", "key_env": "OPENROUTER_API_KEY", "cfg_name": "openrouter_key"},
-    {"name": "Google Gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-2.5-flash", "key_env": "GEMINI_API_KEY", "cfg_name": "gemini_key"},
+    {"name": "Google Gemini", "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "model": "gemini-1.5-flash", "key_env": "GEMINI_API_KEY", "cfg_name": "gemini_key"},
     {"name": "Mistral", "url": "https://api.mistral.ai/v1/chat/completions", "model": "mistral-small-latest", "key_env": "MISTRAL_API_KEY", "cfg_name": "mistral_key"},
     {"name": "Cerebras", "url": "https://api.cerebras.ai/v1/chat/completions", "model": "llama3.1-8b", "key_env": "CEREBRAS_API_KEY", "cfg_name": "cerebras_key"},
     {"name": "SambaNova", "url": "https://api.sambanova.ai/v1/chat/completions", "model": "Meta-Llama-3.3-70B-Instruct", "key_env": "SAMBANOVA_API_KEY", "cfg_name": "sambanova_key"},
