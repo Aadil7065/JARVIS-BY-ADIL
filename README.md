@@ -52,7 +52,6 @@ pip install pytesseract --no-deps
 termux-setup-storage
 ```
 
-```bash
 python jarvis.py
 ```
 
